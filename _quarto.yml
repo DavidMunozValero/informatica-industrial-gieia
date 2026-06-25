@@ -1,0 +1,74 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - index.qmd
+  resources:
+    - widgets/*.html
+
+website:
+  title: "Informática Industrial · Grado en Ingeniería Electrónica Industrial y Automática"
+  favicon: favicon.svg
+  navbar:
+    logo: images/logo_uclm.png
+    background: "#ffffff"
+    foreground: "#8B1D2B"
+  sidebar:
+    style: docked
+    collapse-level: 1
+    contents:
+      - text: "Inicio"
+        href: index.qmd
+      - section: "Bloque 0 — Programación (Arduino / Python / C)"
+        contents:
+          - text: "Tema 0.1: Arduino IDE y NodeMCU"
+          - text: "Tema 0.2: Estructura de programas, tipos y variables"
+          - text: "Tema 0.3: Estructuras de control y vectores/matrices"
+          - text: "Tema 0.4: Punteros y comunicación RS-232"
+      - section: "Bloque 1 — Fundamentos de computadores"
+        contents:
+          - text: "Tema 1: Fundamentos de Computadores"
+      - section: "Bloque 2 — Sistemas SCADA"
+        contents:
+          - text: "Tema 2: Sistemas SCADA"
+      - section: "Bloque 3 — Periféricos industriales"
+        contents:
+          - text: "Tema 3: Periféricos Industriales"
+      - section: "Bloque 4 — Redes de comunicaciones industriales"
+        contents:
+          - text: "Tema 4: Redes de Comunicaciones Industriales"
+      - section: "Bloque 5 — Buses de campo"
+        contents:
+          - text: "Tema 5: Buses de Campo"
+      - section: "Bloque 6 — Sistemas de tiempo real"
+        contents:
+          - text: "Tema 6: Sistemas de Tiempo Real"
+      - section: "Prácticas"
+        contents:
+          - text: "Práctica 1: LEDs"
+          - text: "Práctica 2: Display 7 segmentos"
+          - text: "Práctica 3: Teclado de membrana"
+          - text: "Práctica 4: LCD I2C"
+          - text: "Práctica 5: Infrarrojos"
+          - text: "Prácticas STR: Sistemas de tiempo real"
+
+  search:
+    location: sidebar
+    type: textbox
+  reader-mode: false
+  bread-crumbs: true
+
+format:
+  html:
+    theme: cosmo
+    lang: es
+    css: styles/custom-v2.css
+    toc: true
+    toc-depth: 3
+    toc-title: "En esta página"
+    code-fold: false
+    highlight-style: atom-one
+    fig-cap-location: bottom
+    mermaid:
+      theme: default
+    include-after-body: styles/playground-loader.html

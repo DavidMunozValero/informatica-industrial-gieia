@@ -1,0 +1,147 @@
+<style>
+  .widget-box, .widget-box button, .widget-box input, .widget-box select, .widget-box label {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  .lg-switch {
+    width: 64px; height: 32px; border-radius: 16px; border: 2px solid #8B1D2B;
+    background: #f5f5f5; position: relative; cursor: pointer; transition: background .2s;
+  }
+  .lg-switch.on { background: #8B1D2B; }
+  .lg-switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px; width: 24px; height: 24px;
+    border-radius: 50%; background: #fff; border: 1px solid #ddd; transition: left .2s;
+  }
+  .lg-switch.on::after { left: 34px; }
+  .lg-gate {
+    background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 12px;
+    text-align: center; min-width: 130px;
+  }
+  .lg-gate-name { font-size: 0.75rem; color: #999; text-transform: uppercase; margin-bottom: 6px; }
+  .lg-gate-symbol { font-family: monospace; font-size: 1.1rem; color: #6B0E1A; font-weight: 600; margin-bottom: 6px; }
+  .lg-gate-value { font-size: 1.4rem; font-weight: 700; color: #8B1D2B; }
+  .lg-truth-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  .lg-truth-table th, .lg-truth-table td { border: 1px solid #ddd; padding: 6px 10px; text-align: center; }
+  .lg-truth-table th { background: #F5E6E8; color: #6B0E1A; }
+  .lg-truth-table td.active { background: #fff8e1; font-weight: 700; }
+</style>
+<div class="widget-box">
+<h4>Simulador de puertas lógicas</h4>
+<p style="margin-top:0;font-size:0.9rem;color:#666;">Activa o desactiva las entradas <strong>A</strong> y <strong>B</strong> y observa el resultado de cada puerta en tiempo real.</p>
+
+<div style="display:flex;gap:24px;justify-content:center;align-items:center;flex-wrap:wrap;margin:1.2rem 0;">
+  <div style="text-align:center;">
+    <div style="margin-bottom:6px;font-weight:600;color:#6B0E1A;">A</div>
+    <div class="lg-switch" id="lg-switch-a" role="button" tabindex="0" aria-pressed="false" title="Entrada A"></div>
+    <div id="lg-label-a" style="margin-top:6px;font-family:monospace;font-size:1.1rem;">0</div>
+  </div>
+  <div style="text-align:center;">
+    <div style="margin-bottom:6px;font-weight:600;color:#6B0E1A;">B</div>
+    <div class="lg-switch" id="lg-switch-b" role="button" tabindex="0" aria-pressed="false" title="Entrada B"></div>
+    <div id="lg-label-b" style="margin-top:6px;font-family:monospace;font-size:1.1rem;">0</div>
+  </div>
+</div>
+
+<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:1.2rem 0;">
+  <div class="lg-gate">
+    <div class="lg-gate-name">NOT A</div>
+    <div class="lg-gate-symbol">¬A</div>
+    <div class="lg-gate-value" id="lg-not">1</div>
+  </div>
+  <div class="lg-gate">
+    <div class="lg-gate-name">OR</div>
+    <div class="lg-gate-symbol">A ∨ B</div>
+    <div class="lg-gate-value" id="lg-or">0</div>
+  </div>
+  <div class="lg-gate">
+    <div class="lg-gate-name">AND</div>
+    <div class="lg-gate-symbol">A ∧ B</div>
+    <div class="lg-gate-value" id="lg-and">0</div>
+  </div>
+  <div class="lg-gate">
+    <div class="lg-gate-name">XOR</div>
+    <div class="lg-gate-symbol">A ⊕ B</div>
+    <div class="lg-gate-value" id="lg-xor">0</div>
+  </div>
+</div>
+
+<div style="text-align:center;margin:1rem 0;">
+  <button type="button" id="lg-random" style="background:#8B1D2B;color:#fff;border:none;padding:7px 18px;border-radius:6px;cursor:pointer;font-size:0.85rem;">Aleatorio</button>
+  <button type="button" id="lg-reset" style="background:#fff;color:#8B1D2B;border:1px solid #8B1D2B;padding:7px 18px;border-radius:6px;cursor:pointer;font-size:0.85rem;">Limpiar</button>
+</div>
+
+<h5 style="margin-top:1.5rem;color:#6B0E1A;">Tablas de verdad</h5>
+<div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+  <table class="lg-truth-table" id="table-not">
+    <thead><tr><th>A</th><th>NOT A</th></tr></thead>
+    <tbody>
+      <tr data-a="0"><td>0</td><td>1</td></tr>
+      <tr data-a="1"><td>1</td><td>0</td></tr>
+    </tbody>
+  </table>
+  <table class="lg-truth-table" id="table-bin">
+    <thead><tr><th>A</th><th>B</th><th>OR</th><th>AND</th><th>XOR</th></tr></thead>
+    <tbody>
+      <tr data-a="0" data-b="0"><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr data-a="0" data-b="1"><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+      <tr data-a="1" data-b="0"><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+      <tr data-a="1" data-b="1"><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+(function(){
+  var a=0, b=0;
+  var sa=document.getElementById('lg-switch-a');
+  var sb=document.getElementById('lg-switch-b');
+  var la=document.getElementById('lg-label-a');
+  var lb=document.getElementById('lg-label-b');
+
+  function setA(v){ a=v?1:0; update(); }
+  function setB(v){ b=v?1:0; update(); }
+
+  function toggle(el, setter, val){ setter(!val); }
+  sa.addEventListener('click', function(){ setA(!a); });
+  sb.addEventListener('click', function(){ setB(!b); });
+  sa.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); setA(!a); } });
+  sb.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); setB(!b); } });
+
+  function update(){
+    sa.classList.toggle('on', a===1);
+    sb.classList.toggle('on', b===1);
+    sa.setAttribute('aria-pressed', a===1);
+    sb.setAttribute('aria-pressed', b===1);
+    la.textContent = a;
+    lb.textContent = b;
+
+    var notA = a ? 0 : 1;
+    var orV  = a || b;
+    var andV = a && b;
+    var xorV = (a && !b) || (!a && b);
+
+    document.getElementById('lg-not').textContent = notA;
+    document.getElementById('lg-or').textContent  = orV;
+    document.getElementById('lg-and').textContent = andV;
+    document.getElementById('lg-xor').textContent = xorV;
+
+    document.querySelectorAll('#table-not tbody tr').forEach(function(tr){
+      tr.classList.toggle('active', parseInt(tr.getAttribute('data-a'))===a);
+    });
+    document.querySelectorAll('#table-bin tbody tr').forEach(function(tr){
+      tr.classList.toggle('active', parseInt(tr.getAttribute('data-a'))===a && parseInt(tr.getAttribute('data-b'))===b);
+    });
+  }
+
+  document.getElementById('lg-random').addEventListener('click', function(){
+    a = Math.random() > 0.5 ? 1 : 0;
+    b = Math.random() > 0.5 ? 1 : 0;
+    update();
+  });
+  document.getElementById('lg-reset').addEventListener('click', function(){
+    a = 0; b = 0; update();
+  });
+
+  update();
+})();
+</script>
+</div>

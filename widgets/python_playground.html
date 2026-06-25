@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Playground</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #fafafa;
+    padding: 0;
+  }
+  .pg-container {
+    border: 1px solid #d9d9d9;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .pg-header {
+    background: #8B1D2B;
+    color: #fff;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .pg-header .pg-status {
+    font-size: 0.75rem;
+    font-weight: 400;
+    opacity: 0.9;
+  }
+  .pg-editor-wrap {
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .CodeMirror {
+    height: 180px;
+    font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .pg-controls {
+    display: flex;
+    gap: 8px;
+    padding: 8px 14px;
+    background: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .pg-btn {
+    padding: 6px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .pg-btn-run {
+    background: #8B1D2B;
+    color: #fff;
+  }
+  .pg-btn-run:hover { background: #6B0E1A; }
+  .pg-btn-run:disabled { background: #ccc; cursor: not-allowed; }
+  .pg-btn-clear {
+    background: #fff;
+    color: #8B1D2B;
+    border: 1px solid #8B1D2B;
+  }
+  .pg-btn-clear:hover { background: #F5E6E8; }
+  .pg-btn-reset {
+    background: #fff;
+    color: #666;
+    border: 1px solid #ccc;
+    font-size: 0.78rem;
+    padding: 4px 12px;
+  }
+  .pg-btn-reset:hover { background: #f0f0f0; }
+  .pg-output {
+    padding: 12px 14px;
+    min-height: 80px;
+    max-height: 300px;
+    overflow-y: auto;
+    font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Courier New', monospace;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: #f8f8f8;
+    color: #333;
+  }
+  .pg-output:empty::before {
+    content: "La salida aparecerá aquí...";
+    color: #999;
+    font-style: italic;
+  }
+  .pg-stderr { color: #c0392b; }
+  .pg-error { color: #c0392b; font-weight: 500; }
+  .pg-success { color: #27ae60; }
+  .pg-loading {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: pg-spin 0.8s linear infinite;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  @keyframes pg-spin { to { transform: rotate(360deg); } }
+  .pg-hint {
+    font-size: 0.72rem;
+    color: #999;
+    margin-left: auto;
+  }
+</style>
+</head>
+<body>
+<div class="pg-container">
+  <div class="pg-header">
+    <span>Python Playground</span>
+    <span class="pg-status" id="pg-status">Listo</span>
+  </div>
+  <div class="pg-editor-wrap">
+    <textarea id="pg-editor" spellcheck="false"></textarea>
+  </div>
+  <div class="pg-controls">
+    <button class="pg-btn pg-btn-run" id="pg-run" type="button">&#9654 Ejecutar</button>
+    <button class="pg-btn pg-btn-clear" id="pg-clear" type="button">Limpiar salida</button>
+    <button class="pg-btn pg-btn-reset" id="pg-reset" type="button">Restaurar código</button>
+    <span class="pg-hint">Cmd/Ctrl + Enter</span>
+  </div>
+  <div class="pg-output" id="pg-output"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+
+<script>
+(function(){
+  var initialCode = '# Escribe tu código Python aquí\nprint("Hola, mundo!")';
+  var pyodideReady = null;
+  var editor;
+  var output = document.getElementById('pg-output');
+  var runBtn = document.getElementById('pg-run');
+  var clearBtn = document.getElementById('pg-clear');
+  var resetBtn = document.getElementById('pg-reset');
+  var statusEl = document.getElementById('pg-status');
+
+  var textarea = document.getElementById('pg-editor');
+  textarea.value = initialCode;
+
+  editor = CodeMirror.fromTextArea(textarea, {
+    mode: 'python',
+    theme: 'eclipse',
+    lineNumbers: true,
+    matchBrackets: true,
+    indentUnit: 4,
+    tabSize: 4,
+    indentWithTabs: false,
+    autoCloseBrackets: true
+  });
+  editor.setSize('100%', '180px');
+  editor.setValue(initialCode);
+  editor.refresh();
+
+  // Recibir código desde la página padre via postMessage de forma segura
+  window.addEventListener('message', function(event) {
+    // Ignorar mensajes cuyo origen no sea la página padre local
+    var parentOrigin = window.location.origin;
+    if (event.origin !== parentOrigin) return;
+    if (event.data && event.data.type === 'code' && typeof event.data.code === 'string') {
+      initialCode = event.data.code;
+      editor.setValue(initialCode);
+      editor.refresh();
+    }
+  });
+
+  function setStatus(msg, loading) {
+    statusEl.innerHTML = loading ? '<span class="pg-loading"></span>' + msg : msg;
+  }
+
+  function appendOutput(text, cls) {
+    var span = document.createElement('span');
+    span.className = cls || '';
+    span.textContent = text;
+    output.appendChild(span);
+    output.scrollTop = output.scrollHeight;
+  }
+
+  function loadPyodideAsync() {
+    if (pyodideReady) return pyodideReady;
+    pyodideReady = new Promise(function(resolve, reject) {
+      setStatus('Cargando Python...', true);
+      runBtn.disabled = true;
+      var timeoutId = setTimeout(function() {
+        setStatus('Error: tiempo de carga agotado');
+        appendOutput('Error: Pyodide no cargó en el tiempo esperado. Comprueba la conexión y recarga la página.\n', 'pg-error');
+        runBtn.disabled = false;
+        reject(new Error('Pyodide load timeout'));
+      }, 60000);
+      var script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js';
+      script.async = true;
+      script.onload = function() {
+        clearTimeout(timeoutId);
+        if (typeof loadPyodide === 'function') {
+          loadPyodide({
+            indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/'
+          }).then(function(py) {
+            setStatus('Python listo');
+            runBtn.disabled = false;
+            resolve(py);
+          }).catch(function(err) {
+            clearTimeout(timeoutId);
+            setStatus('Error al cargar Python');
+            appendOutput('Error: ' + err.message + '\n', 'pg-error');
+            runBtn.disabled = false;
+            reject(err);
+          });
+        } else {
+          clearTimeout(timeoutId);
+          setStatus('Error: API no disponible');
+          appendOutput('Error: loadPyodide no disponible.\n', 'pg-error');
+          runBtn.disabled = false;
+          reject(new Error('loadPyodide not found'));
+        }
+      };
+      script.onerror = function() {
+        clearTimeout(timeoutId);
+        setStatus('Error de red');
+        appendOutput('Error: no se pudo cargar Pyodide.\n', 'pg-error');
+        runBtn.disabled = false;
+        reject(new Error('Failed to load script'));
+      };
+      document.head.appendChild(script);
+    });
+    return pyodideReady;
+  }
+
+  async function runCode() {
+    output.innerHTML = '';
+    var code = editor.getValue();
+    try {
+      var py = await loadPyodideAsync();
+      setStatus('Ejecutando...', true);
+      runBtn.disabled = true;
+      py.setStdout({ batched: function(msg) { appendOutput(msg + '\n'); } });
+      py.setStderr({ batched: function(msg) { appendOutput(msg + '\n', 'pg-stderr'); } });
+      var result = await py.runPythonAsync(code);
+      if (result !== undefined && result !== null) {
+        appendOutput(String(result) + '\n', 'pg-success');
+      }
+      setStatus('Ejecución completada');
+    } catch(err) {
+      appendOutput(String(err) + '\n', 'pg-error');
+      setStatus('Error en la ejecución');
+    } finally {
+      runBtn.disabled = false;
+    }
+  }
+
+  runBtn.addEventListener('click', runCode);
+  clearBtn.addEventListener('click', function() { output.innerHTML = ''; });
+  resetBtn.addEventListener('click', function() { editor.setValue(initialCode); editor.refresh(); });
+
+  document.addEventListener('keydown', function(e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault();
+      runCode();
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<script>
+(function() {
+  function loadPlaygrounds() {
+    var pres = document.querySelectorAll('pre.pg-code');
+    pres.forEach(function(pre) {
+      var iframe = pre.nextElementSibling;
+      if (!iframe || iframe.tagName !== 'IFRAME' || iframe.src.indexOf('python_playground') === -1) {
+        var sibling = pre;
+        while (sibling) {
+          sibling = sibling.nextElementSibling;
+          if (sibling && sibling.tagName === 'IFRAME') break;
+        }
+        iframe = sibling;
+      }
+      if (!iframe) return;
+      var code = pre.textContent;
+      function send() {
+        try {
+          var origin = iframe.src ? new URL(iframe.src, window.location.href).origin : '*';
+          iframe.contentWindow.postMessage({type: 'code', code: code}, origin);
+        } catch(e) {}
+      }
+      if (iframe.contentWindow && iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+        send();
+      }
+      iframe.addEventListener('load', function() {
+        send();
+        setTimeout(send, 300);
+      });
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { setTimeout(loadPlaygrounds, 200); });
+  } else {
+    setTimeout(loadPlaygrounds, 200);
+  }
+  window.addEventListener('load', function() { setTimeout(loadPlaygrounds, 500); });
+})();
+</script>

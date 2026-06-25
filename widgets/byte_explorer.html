@@ -1,0 +1,94 @@
+<style>
+  .widget-box, .widget-box button, .widget-box input, .widget-box select, .widget-box label {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+</style>
+<div class="widget-box">
+<h4>Explorador de Byte</h4>
+<p style="margin-top:0;font-size:0.9rem;color:#666;">Pulsa los bits para encenderlos/apagarlos y observa cómo cambia el valor.</p>
+<div id="byte-explorer">
+  <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:1.2rem 0;">
+    <button type="button" data-bit="7" style="width:54px;height:64px;border-radius:8px;border:2px solid #8B1D2B;cursor:pointer;font-size:13px;font-weight:600;color:#666;background:#f5f5f5;transition:all .15s;">0</button>
+    <button type="button" data-bit="6" style="width:54px;height:64px;border-radius:8px;border:2px solid #8B1D2B;cursor:pointer;font-size:13px;font-weight:600;color:#666;background:#f5f5f5;transition:all .15s;">0</button>
+    <button type="button" data-bit="5" style="width:54px;height:64px;border-radius:8px;border:2px solid #8B1D2B;cursor:pointer;font-size:13px;font-weight:600;color:#666;background:#f5f5f5;transition:all .15s;">0</button>
+    <button type="button" data-bit="4" style="width:54px;height:64px;border-radius:8px;border:2px solid #8B1D2B;cursor:pointer;font-size:13px;font-weight:600;color:#666;background:#f5f5f5;transition:all .15s;">0</button>
+    <button type="button" data-bit="3" style="width:54px;height:64px;border-radius:8px;border:2px solid #8B1D2B;cursor:pointer;font-size:13px;font-weight:600;color:#666;background:#f5f5f5;transition:all .15s;">0</button>
+    <button type="button" data-bit="2" style="width:54px;height:64px;border-radius:8px;border:2px solid #8B1D2B;cursor:pointer;font-size:13px;font-weight:600;color:#666;background:#f5f5f5;transition:all .15s;">0</button>
+    <button type="button" data-bit="1" style="width:54px;height:64px;border-radius:8px;border:2px solid #8B1D2B;cursor:pointer;font-size:13px;font-weight:600;color:#666;background:#f5f5f5;transition:all .15s;">0</button>
+    <button type="button" data-bit="0" style="width:54px;height:64px;border-radius:8px;border:2px solid #8B1D2B;cursor:pointer;font-size:13px;font-weight:600;color:#666;background:#f5f5f5;transition:all .15s;">0</button>
+  </div>
+  <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;font-size:11px;color:#999;margin-top:-4px;">
+    <span style="width:54px;text-align:center;">128</span>
+    <span style="width:54px;text-align:center;">64</span>
+    <span style="width:54px;text-align:center;">32</span>
+    <span style="width:54px;text-align:center;">16</span>
+    <span style="width:54px;text-align:center;">8</span>
+    <span style="width:54px;text-align:center;">4</span>
+    <span style="width:54px;text-align:center;">2</span>
+    <span style="width:54px;text-align:center;">1</span>
+  </div>
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:1.2rem;">
+    <div style="text-align:center;background:#fff;padding:8px 18px;border-radius:8px;border:1px solid #ddd;">
+      <div style="font-size:0.72rem;color:#999;text-transform:uppercase;">Binario</div>
+      <div id="be-bin" style="font-family:monospace;font-size:1.15rem;color:#8B1D2B;font-weight:600;">00000000</div>
+    </div>
+    <div style="text-align:center;background:#fff;padding:8px 18px;border-radius:8px;border:1px solid #ddd;">
+      <div style="font-size:0.72rem;color:#999;text-transform:uppercase;">Decimal</div>
+      <div id="be-dec" style="font-family:monospace;font-size:1.15rem;color:#8B1D2B;font-weight:600;">0</div>
+    </div>
+    <div style="text-align:center;background:#fff;padding:8px 18px;border-radius:8px;border:1px solid #ddd;">
+      <div style="font-size:0.72rem;color:#999;text-transform:uppercase;">Hexadecimal</div>
+      <div id="be-hex" style="font-family:monospace;font-size:1.15rem;color:#8B1D2B;font-weight:600;">00</div>
+    </div>
+    <div style="text-align:center;background:#fff;padding:8px 18px;border-radius:8px;border:1px solid #ddd;">
+      <div style="font-size:0.72rem;color:#999;text-transform:uppercase;">Octal</div>
+      <div id="be-oct" style="font-family:monospace;font-size:1.15rem;color:#8B1D2B;font-weight:600;">000</div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:1rem;">
+    <button type="button" id="be-random" style="background:#8B1D2B;color:#fff;border:none;padding:7px 18px;border-radius:6px;cursor:pointer;font-size:0.85rem;">Aleatorio</button>
+    <button type="button" id="be-reset" style="background:#fff;color:#8B1D2B;border:1px solid #8B1D2B;padding:7px 18px;border-radius:6px;cursor:pointer;font-size:0.85rem;">Limpiar</button>
+  </div>
+</div>
+<script>
+(function(){
+  var bits=[0,0,0,0,0,0,0,0];
+  var btns=document.querySelectorAll('#byte-explorer button[data-bit]');
+  function render(){
+    var bin=bits.join('');
+    var dec=0;
+    for(var i=0;i<8;i++){if(bits[i])dec+=Math.pow(2,7-i);}
+    var hex=dec.toString(16).toUpperCase().padStart(2,'0');
+    var oct=dec.toString(8).padStart(3,'0');
+    document.getElementById('be-bin').textContent=bin;
+    document.getElementById('be-dec').textContent=dec;
+    document.getElementById('be-hex').textContent=hex;
+    document.getElementById('be-oct').textContent=oct;
+    btns.forEach(function(b,i){
+      var idx=parseInt(b.getAttribute('data-bit'));
+      var pos=7-idx;
+      b.textContent=bits[pos];
+      if(bits[pos]){b.style.background='#8B1D2B';b.style.color='#fff';}
+      else{b.style.background='#f5f5f5';b.style.color='#666';}
+    });
+  }
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){
+      var idx=parseInt(b.getAttribute('data-bit'));
+      var pos=7-idx;
+      bits[pos]=bits[pos]?0:1;
+      render();
+    });
+  });
+  document.getElementById('be-random').addEventListener('click',function(){
+    bits=bits.map(function(){return Math.random()>0.5?1:0;});
+    render();
+  });
+  document.getElementById('be-reset').addEventListener('click',function(){
+    bits=[0,0,0,0,0,0,0,0];
+    render();
+  });
+  render();
+})();
+</script>
+</div>

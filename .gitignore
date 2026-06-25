@@ -1,0 +1,29 @@
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDEs y editores
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Entornos virtuales y dependencias
+venv/
+.env/
+node_modules/
+
+# Salida de Quarto
+/_site/
+/.quarto/
+
+# Archivos temporales
+*.log
+*.tmp
+
+# Material docente fuente (67 MB de binarios; no se versiona).
+# Mantener en local como materia prima. Si se necesita en el repo, usar Git LFS.
+/contenidos/
+
+**/*.quarto_ipynb

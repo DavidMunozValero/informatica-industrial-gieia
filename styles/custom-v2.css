@@ -1,0 +1,383 @@
+/* Tema UCLM - Informática GIA (solo modo claro) */
+
+:root {
+  --uclm-granate: #8B1D2B;
+  --uclm-granate-dark: #6B0E1A;
+  --uclm-granate-light: #B33040;
+  --uclm-rose: #F5E6E8;
+  --uclm-gold: #C9A227;
+  --uclm-ink: #2D2D2D;
+}
+
+/* Navbar — cabecera blanca con logos en color */
+.navbar {
+  background-color: #ffffff !important;
+  border-bottom: 3px solid var(--uclm-gold) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 0.45rem 1rem !important;
+  position: relative;
+}
+
+.navbar-brand,
+.navbar-title,
+.navbar-brand-container {
+  color: var(--uclm-granate) !important;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  font-size: 1.05rem;
+}
+
+.navbar-title {
+  border-left: 2px solid var(--uclm-gold);
+  padding-left: 0.7rem;
+  margin-left: 0.5rem;
+}
+
+.navbar-logo {
+  max-height: 42px !important;
+  margin-right: 0.4rem;
+  padding: 2px 0;
+  filter: none !important;
+}
+
+.nav-link,
+.menu-text {
+  color: var(--uclm-granate) !important;
+}
+
+.nav-link:hover,
+.menu-text:hover {
+  color: var(--uclm-granate-dark) !important;
+}
+
+/* Brand container a la izquierda (sin centrar) */
+.navbar-brand-container {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Distribuir el navbar: marca a la izquierda, logo EIIA a la derecha */
+.navbar > .navbar-container.container-fluid {
+  display: flex !important;
+  justify-content: flex-start;
+  align-items: center;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+  width: 100%;
+}
+
+.navbar-brand-container {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+/* Ocultar zona de herramientas si está vacía para que no robe espacio */
+.quarto-navbar-tools:empty {
+  display: none !important;
+}
+
+/* Logo EIIA en la parte derecha de la cabecera, absoluto con margen derecho */
+.navbar-container::after {
+  content: "";
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-block;
+  background-image: url("../images/Logo_EIIA_transparent.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: right center;
+  height: 50px;
+  width: 178px; /* proporcional a 2000x563 */
+  z-index: 10;
+}
+
+/* Dejar margen a la derecha del contenido para que no solape con el logo EIIA */
+.navbar-brand-container {
+  padding-right: 210px;
+}
+
+@media (max-width: 575.98px) {
+  .navbar-brand-container {
+    padding-right: 0;
+  }
+}
+
+/* Iconos de navbar (búsqueda y toggle sidebar) */
+.quarto-btn-toggle,
+.quarto-search-button,
+.quarto-btn-toggle .bi,
+.quarto-search-button .bi {
+  color: var(--uclm-granate) !important;
+}
+
+.quarto-btn-toggle:hover,
+.quarto-search-button:hover {
+  color: var(--uclm-granate-dark) !important;
+}
+
+/* Ocultar el logo EIIA en pantallas pequeñas */
+@media (max-width: 575.98px) {
+  .navbar-container::after {
+    display: none;
+  }
+}
+
+/* Banda granate fina bajo la cabecera */
+.quarto-secondary-nav {
+  background-color: var(--uclm-granate) !important;
+  border-bottom: none !important;
+}
+
+.quarto-secondary-nav .nav-link,
+.quarto-secondary-nav .menu-text {
+  color: #fff !important;
+}
+
+/* Sidebar */
+.sidebar-item .active,
+.sidebar-item.active {
+  background-color: var(--uclm-rose) !important;
+  color: var(--uclm-granate-dark) !important;
+  font-weight: 600;
+  border-left: 3px solid var(--uclm-granate) !important;
+}
+
+.sidebar-item:hover {
+  background-color: var(--uclm-rose) !important;
+}
+
+/* Títulos */
+h1, h2, h3, h4 {
+  color: var(--uclm-granate-dark);
+}
+
+h1 {
+  border-bottom: 2px solid var(--uclm-granate);
+  padding-bottom: 0.3em;
+}
+
+h2 {
+  border-left: 4px solid var(--uclm-granate);
+  padding-left: 0.6em;
+  margin-top: 1.8em;
+}
+
+/* Hero portada */
+.hero-uclm {
+  background: linear-gradient(135deg, var(--uclm-granate) 0%, var(--uclm-granate-dark) 100%);
+  color: #fff;
+  padding: 3.5rem 2rem;
+  border-radius: 14px;
+  border-left: 6px solid var(--uclm-gold);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.hero-uclm h1 {
+  color: #fff;
+  border: none;
+  font-size: 2.6rem;
+  margin-bottom: 0.3rem;
+}
+
+.hero-uclm p {
+  color: rgba(255,255,255,0.95);
+  font-size: 1.15rem;
+  margin-bottom: 0;
+}
+
+.hero-uclm .badge-uclm {
+  display: inline-block;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.35);
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+  letter-spacing: 0.5px;
+}
+
+/* Tarjetas de navegación */
+.card-nav {
+  display: block;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-left: 4px solid var(--uclm-granate);
+  border-radius: 10px;
+  padding: 1.4rem 1.6rem;
+  text-decoration: none;
+  color: var(--uclm-ink);
+  transition: transform .15s ease, box-shadow .15s ease;
+  height: 100%;
+}
+
+.card-nav:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(139,29,43,0.18);
+  color: var(--uclm-granate-dark);
+  text-decoration: none;
+}
+
+.card-nav h3 {
+  margin-top: 0;
+  color: var(--uclm-granate);
+  font-size: 1.15rem;
+}
+
+.card-nav p {
+  margin-bottom: 0;
+  font-size: 0.92rem;
+  color: #555;
+}
+
+/* Callouts */
+.callout {
+  border-radius: 8px;
+}
+
+.callout-note {
+  border-left-color: var(--uclm-granate) !important;
+}
+
+.callout-note .callout-header {
+  color: var(--uclm-granate-dark) !important;
+  font-weight: 600;
+}
+
+.callout-warning {
+  border-left-color: var(--uclm-gold) !important;
+}
+
+.callout-warning .callout-header {
+  color: #8a6d1f !important;
+  font-weight: 600;
+}
+
+/* Ejemplos y ejercicios personalizados */
+.callout-example,
+.callout-exercise {
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+}
+
+.callout-example {
+  background-color: #eef4fa;
+  border-left: 3px solid #2D6A9F;
+}
+
+.callout-example > h3,
+.callout-exercise > h3 {
+  margin-top: 0;
+}
+
+.callout-example > h3 {
+  color: #2D6A9F;
+}
+
+.callout-exercise {
+  background-color: #f6f6f8;
+  border-left: 3px solid var(--uclm-granate);
+}
+
+.callout-exercise > h3 {
+  color: var(--uclm-granate-dark);
+}
+
+/* Soluciones — crema + dorado (diferenciado del enunciado del ejercicio) */
+.solucion-wrapper .callout {
+  background-color: #FBF4E0 !important;
+  border-left: 4px solid var(--uclm-gold) !important;
+  border-radius: 8px;
+}
+
+.solucion-wrapper .callout > .callout-header,
+.solucion-wrapper .callout .callout-title-container {
+  color: #8a6d1f !important;
+  font-weight: 600;
+}
+
+.solucion-wrapper .callout .callout-icon-container .callout-icon {
+  color: var(--uclm-gold) !important;
+}
+
+.solucion-wrapper .callout .callout-btn-toggle .callout-toggle {
+  color: #8a6d1f !important;
+}
+
+/* Widget containers */
+.widget-box {
+  border: 1px solid #d9d9d9;
+  border-radius: 12px;
+  padding: 1.2rem 1.4rem;
+  margin: 1.5rem 0;
+  background: #fafafa;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+/* Diagramas Mermaid — centrados horizontalmente y a tamaño legible */
+.mermaid,
+.cell-output-display .figure {
+  text-align: center;
+}
+.mermaid > svg {
+  max-width: 100% !important;
+  width: auto !important;
+  min-width: min(100%, 640px);
+  height: auto !important;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.widget-box h4 {
+  margin-top: 0;
+  color: var(--uclm-granate);
+  font-size: 1.05rem;
+}
+
+/* Tablas */
+table {
+  border-collapse: collapse;
+}
+
+thead th {
+  background-color: var(--uclm-granate) !important;
+  color: #fff !important;
+  border-color: var(--uclm-granate-dark) !important;
+}
+
+tbody tr:nth-child(even) {
+  background-color: var(--uclm-rose);
+}
+
+/* Código */
+pre.sourceCode {
+  border-left: 3px solid var(--uclm-granate);
+  border-radius: 4px;
+}
+
+code {
+  color: var(--uclm-granate-dark);
+}
+
+/* Fórmulas / LaTeX */
+.math.display {
+  margin: 1.2em 0;
+  text-align: center;
+}
+
+.callout .math.display {
+  background: transparent;
+}
+
+/* Footer */
+.nav-footer {
+  background-color: var(--uclm-granate-dark) !important;
+  color: #fff;
+}
+
+.nav-footer a {
+  color: rgba(255,255,255,0.85) !important;
+}

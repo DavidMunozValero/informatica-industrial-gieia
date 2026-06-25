@@ -1,0 +1,139 @@
+<style>
+  .widget-box, .widget-box button, .widget-box input, .widget-box select, .widget-box label {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+</style>
+<div class="widget-box">
+<h4>Conversor de Bases</h4>
+<p style="margin-top:0;font-size:0.9rem;color:#666;">Introduce un número, elige la base de origen y observa la conversión a todas las bases.</p>
+<div id="base-converter">
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:1rem;">
+    <div>
+      <label style="font-size:0.78rem;color:#888;display:block;margin-bottom:3px;">Número</label>
+      <input type="text" id="bc-input" value="42" style="width:140px;padding:8px 10px;border:1px solid #ccc;border-radius:6px;font-family:monospace;font-size:1rem;">
+    </div>
+    <div>
+      <label style="font-size:0.78rem;color:#888;display:block;margin-bottom:3px;">Base origen</label>
+      <select id="bc-base" style="padding:8px 10px;border:1px solid #ccc;border-radius:6px;font-size:1rem;cursor:pointer;">
+        <option value="2">Binario (2)</option>
+        <option value="8">Octal (8)</option>
+        <option value="10" selected>Decimal (10)</option>
+        <option value="16">Hexadecimal (16)</option>
+      </select>
+    </div>
+    <button type="button" id="bc-random" style="background:#8B1D2B;color:#fff;border:none;padding:9px 16px;border-radius:6px;cursor:pointer;font-size:0.9rem;">Aleatorio</button>
+  </div>
+  <div id="bc-error" style="color:#B33040;font-size:0.85rem;margin-bottom:0.8rem;display:none;"></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:0.6rem;">
+    <div style="text-align:center;background:#fff;padding:10px 14px;border-radius:8px;border:1px solid #ddd;">
+      <div style="font-size:0.72rem;color:#999;text-transform:uppercase;">Binario</div>
+      <div id="bc-bin" style="font-family:monospace;font-size:1.1rem;color:#8B1D2B;font-weight:600;word-break:break-all;">—</div>
+    </div>
+    <div style="text-align:center;background:#fff;padding:10px 14px;border-radius:8px;border:1px solid #ddd;">
+      <div style="font-size:0.72rem;color:#999;text-transform:uppercase;">Octal</div>
+      <div id="bc-oct" style="font-family:monospace;font-size:1.1rem;color:#8B1D2B;font-weight:600;word-break:break-all;">—</div>
+    </div>
+    <div style="text-align:center;background:#fff;padding:10px 14px;border-radius:8px;border:1px solid #ddd;">
+      <div style="font-size:0.72rem;color:#999;text-transform:uppercase;">Decimal</div>
+      <div id="bc-dec" style="font-family:monospace;font-size:1.1rem;color:#8B1D2B;font-weight:600;word-break:break-all;">—</div>
+    </div>
+    <div style="text-align:center;background:#fff;padding:10px 14px;border-radius:8px;border:1px solid #ddd;">
+      <div style="font-size:0.72rem;color:#999;text-transform:uppercase;">Hexadecimal</div>
+      <div id="bc-hex" style="font-family:monospace;font-size:1.1rem;color:#8B1D2B;font-weight:600;word-break:break-all;">—</div>
+    </div>
+  </div>
+  <div id="bc-decomp" style="margin-top:1rem;background:#F5E6E8;border-left:3px solid #8B1D2B;padding:10px 14px;border-radius:4px;font-size:0.88rem;color:#333;"></div>
+</div>
+<script>
+(function(){
+  var digits="0123456789ABCDEF";
+  function toDecimal(str,base){
+    str=str.toUpperCase().replace(/^0b|^0o|^0x/i,'');
+    var val=0;
+    for(var i=0;i<str.length;i++){
+      var c=str[i];
+      if(c==='.')continue;
+      var d=digits.indexOf(c);
+      if(d<0||d>=base)return null;
+      var pos=str.indexOf('.');
+      var exp=pos<0?str.length-1-i:pos-1-i;
+      val+=d*Math.pow(base,exp);
+    }
+    return val;
+  }
+  function fromDecimal(num,base){
+    if(num===0)return "0";
+    var intPart=Math.floor(Math.abs(num));
+    var fracPart=Math.abs(num)-intPart;
+    var intStr="";
+    while(intPart>0){intStr=digits[intPart%base]+intStr;intPart=Math.floor(intPart/base);}
+    if(intStr==="")intStr="0";
+    var fracStr="";
+    if(fracPart>0){
+      fracStr=".";
+      var count=0;
+      while(fracPart>0&&count<8){
+        fracPart*=base;
+        var d=Math.floor(fracPart);
+        fracStr+=digits[d];
+        fracPart-=d;
+        count++;
+      }
+    }
+    return (num<0?"-":"")+intStr+fracStr;
+  }
+  function decompose(str,base){
+    str=str.toUpperCase().replace(/^0b|^0o|^0x/i,'');
+    var parts=str.split('.');
+    var intPart=parts[0];
+    var terms=[];
+    for(var i=0;i<intPart.length;i++){
+      var d=digits.indexOf(intPart[i]);
+      if(d<0||d>=base)continue;
+      var exp=intPart.length-1-i;
+      if(d>0)terms.push(d+"·"+base+"^"+exp);
+    }
+    if(parts[1]){
+      for(var j=0;j<parts[1].length;j++){
+        var d2=digits.indexOf(parts[1][j]);
+        if(d2<0||d2>=base)continue;
+        var exp2=-(j+1);
+        if(d2>0)terms.push(d2+"·"+base+"^"+exp2);
+      }
+    }
+    return terms.length?terms.join(" + "):"—";
+  }
+  function render(){
+    var input=document.getElementById('bc-input').value.trim();
+    var base=parseInt(document.getElementById('bc-base').value);
+    var err=document.getElementById('bc-error');
+    err.style.display='none';
+    if(!input){err.textContent="Introduce un número.";err.style.display='block';return;}
+    var dec=toDecimal(input,base);
+    if(dec===null||isNaN(dec)){
+      err.textContent="Número no válido para la base seleccionada. Dígitos permitidos: "+digits.slice(0,base);
+      err.style.display='block';
+      ['bc-bin','bc-oct','bc-dec','bc-hex'].forEach(function(id){document.getElementById(id).textContent='—';});
+      document.getElementById('bc-decomp').textContent='';
+      return;
+    }
+    document.getElementById('bc-bin').textContent=fromDecimal(dec,2);
+    document.getElementById('bc-oct').textContent=fromDecimal(dec,8);
+    document.getElementById('bc-dec').textContent=dec.toString();
+    document.getElementById('bc-hex').textContent=fromDecimal(dec,16).toUpperCase();
+    document.getElementById('bc-decomp').innerHTML="<strong>Descomposición polinómica (base "+base+"):</strong><br>"+decompose(input,base)+" = "+dec;
+  }
+  document.getElementById('bc-input').addEventListener('input',render);
+  document.getElementById('bc-base').addEventListener('change',render);
+  document.getElementById('bc-random').addEventListener('click',function(){
+    var bases=[2,8,10,16];
+    var b=bases[Math.floor(Math.random()*bases.length)];
+    document.getElementById('bc-base').value=b;
+    var n=Math.floor(Math.random()*256);
+    document.getElementById('bc-input').value=fromDecimal(n,b);
+    render();
+  });
+  render();
+})();
+</script>
+</div>

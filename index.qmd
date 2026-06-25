@@ -1,0 +1,169 @@
+---
+title: "Informática Industrial"
+subtitle: "Grado en Ingeniería Electrónica Industrial y Automática · UCLM"
+author: "David Muñoz Valero"
+---
+
+<div class="hero-uclm">
+
+<img src="images/logo_uclm_white.png" alt="UCLM" style="height:75px;margin-bottom:1.2rem;">
+
+# Informática Industrial · Grado en Ingeniería Electrónica Industrial y Automática
+
+<p>Escuela de Ingeniería Industrial y Aeroespacial de Toledo</p>
+
+<span class="badge-uclm">Curso 2026 / 27</span>
+
+</div>
+
+## Temario
+
+### Bloque 0 — Programación (Arduino / Python / C)
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:1rem;">
+
+<div class="card-nav" style="opacity:0.55;cursor:default;">
+<h3>Tema 0.1 — Arduino IDE y NodeMCU</h3>
+<p>Entorno Arduino IDE, introducción a NodeMCU y primeros programas. <em>(Próximamente)</em></p>
+</div>
+
+<div class="card-nav" style="opacity:0.55;cursor:default;">
+<h3>Tema 0.2 — Estructura de programas, tipos y variables</h3>
+<p>Estructura de programas, tipos de datos, variables y lectura/escritura de información. <em>(Próximamente)</em></p>
+</div>
+
+<div class="card-nav" style="opacity:0.55;cursor:default;">
+<h3>Tema 0.3 — Estructuras de control y vectores/matrices</h3>
+<p>Selección, repetición, vectores y matrices en Python y C. <em>(Próximamente)</em></p>
+</div>
+
+<div class="card-nav" style="opacity:0.55;cursor:default;">
+<h3>Tema 0.4 — Punteros y comunicación RS-232</h3>
+<p>Punteros en vectores y matrices, comunicación por puerto RS-232 en C y Python. <em>(Próximamente)</em></p>
+</div>
+
+</div>
+
+### Bloque 1 — Fundamentos de computadores
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:1rem;">
+
+<div class="card-nav" style="opacity:0.55;cursor:default;">
+<h3>Tema 1 — Fundamentos de Computadores</h3>
+<p>Arquitectura de computadores, CPU, memoria y buses aplicados al entorno industrial. <em>(Próximamente)</em></p>
+</div>
+
+</div>
+
+### Bloque 2 — Sistemas SCADA
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:1rem;">
+
+<div class="card-nav" style="opacity:0.55;cursor:default;">
+<h3>Tema 2 — Sistemas SCADA</h3>
+<p>Concepto, funciones y arquitectura de los sistemas de supervisión, control y adquisición de datos. <em>(Próximamente)</em></p>
+</div>
+
+</div>
+
+### Bloque 3 — Periféricos industriales
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:1rem;">
+
+<div class="card-nav" style="opacity:0.55;cursor:default;">
+<h3>Tema 3 — Periféricos Industriales</h3>
+<p>Sensores, actuadores e interfaces de entrada/salida en entornos industriales. <em>(Próximamente)</em></p>
+</div>
+
+</div>
+
+### Bloque 4 — Redes de comunicaciones industriales
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:1rem;">
+
+<div class="card-nav" style="opacity:0.55;cursor:default;">
+<h3>Tema 4 — Redes de Comunicaciones Industriales</h3>
+<p>Protocolos y topologías de comunicación en redes industriales. <em>(Próximamente)</em></p>
+</div>
+
+</div>
+
+### Bloque 5 — Buses de campo
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:1rem;">
+
+<div class="card-nav" style="opacity:0.55;cursor:default;">
+<h3>Tema 5 — Buses de Campo</h3>
+<p>Buses industriales: características, comparativa y casos de aplicación. <em>(Próximamente)</em></p>
+</div>
+
+</div>
+
+### Bloque 6 — Sistemas de tiempo real
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:1rem;">
+
+<div class="card-nav" style="opacity:0.55;cursor:default;">
+<h3>Tema 6 — Sistemas de Tiempo Real</h3>
+<p>Planificación, restricciones temporales y sistemas de tiempo real en control industrial. <em>(Próximamente)</em></p>
+</div>
+
+</div>
+
+### Prácticas
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:1rem;">
+
+<div class="card-nav" style="opacity:0.55;cursor:default;">
+<h3>Práctica 1 — LEDs</h3>
+<p>Control de salidas digitales con LEDs. <em>(Próximamente)</em></p>
+</div>
+
+<div class="card-nav" style="opacity:0.55;cursor:default;">
+<h3>Práctica 2 — Display 7 segmentos</h3>
+<p>Control de un display de 7 segmentos. <em>(Próximamente)</em></p>
+</div>
+
+<div class="card-nav" style="opacity:0.55;cursor:default;">
+<h3>Práctica 3 — Teclado de membrana</h3>
+<p>Lectura de un teclado matricial de membrana. <em>(Próximamente)</em></p>
+</div>
+
+<div class="card-nav" style="opacity:0.55;cursor:default;">
+<h3>Práctica 4 — LCD I2C</h3>
+<p>Visualización por LCD vía I2C. <em>(Próximamente)</em></p>
+</div>
+
+<div class="card-nav" style="opacity:0.55;cursor:default;">
+<h3>Práctica 5 — Infrarrojos</h3>
+<p>Comunicación por infrarrojos. <em>(Próximamente)</em></p>
+</div>
+
+<div class="card-nav" style="opacity:0.55;cursor:default;">
+<h3>Prácticas STR — Sistemas de tiempo real</h3>
+<p>Prácticas de planificación y tiempo real. <em>(Próximamente)</em></p>
+</div>
+
+</div>
+
+## Sobre este material
+
+Este material docente ha sido diseñado como recurso interactivo para la asignatura
+de **Informática Industrial** del Grado en Ingeniería Electrónica Industrial y
+Automática de la Universidad de Castilla-La Mancha.
+
+Puedes navegar por los temas desde la barra lateral izquierda. Cada tema incluirá:
+
+- **Diagramas interactivos** para visualizar conceptos.
+- **Widgets** para experimentar con bits, bases numéricas, puertas lógicas y código.
+- **Código Python/C ejecutable** para verificar conceptos de forma práctica.
+- **Ejercicios** con soluciones desplegables.
+
+::: callout-note
+## Créditos
+
+**Autor:** David Muñoz Valero  
+**Departamento:** Tecnologías y Sistemas de Información  
+**Escuela de Ingeniería Industrial y Aeroespacial de Toledo — UCLM**  
+Curso académico 2026/27
+:::
