@@ -18,51 +18,51 @@ author: "David Muñoz Valero"
 
 ## Temario
 
-### Bloque 0 — Programación (Arduino / Python / C)
+### Bloque 0 — Programación de sistemas embebidos
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:1rem;">
 
-<div class="card-nav" style="opacity:0.55;cursor:default;">
-<h3>Tema 0.1 — Arduino IDE y NodeMCU</h3>
-<p>Entorno Arduino IDE, introducción a NodeMCU y primeros programas. <em>(Próximamente)</em></p>
-</div>
+<a href="tema0_1_arduino_esp32.qmd" class="card-nav">
+<h3>Tema 0.1 — Arduino IDE y ESP32</h3>
+<p>Entorno Arduino IDE, introducción al NodeMCU ESP32 (Xtensa, WiFi/BT) y primeros programas.</p>
+</a>
 
-<div class="card-nav" style="opacity:0.55;cursor:default;">
+<a href="tema0_2_estructura_tipos.qmd" class="card-nav">
 <h3>Tema 0.2 — Estructura de programas, tipos y variables</h3>
-<p>Estructura de programas, tipos de datos, variables y lectura/escritura de información. <em>(Próximamente)</em></p>
-</div>
+<p>Estructura de programas en C de Arduino, tipos elementales, operadores, ámbito y lectura/escritura por el puerto serie.</p>
+</a>
 
-<div class="card-nav" style="opacity:0.55;cursor:default;">
+<a href="tema0_3_control_vectores.qmd" class="card-nav">
 <h3>Tema 0.3 — Estructuras de control y vectores/matrices</h3>
-<p>Selección, repetición, vectores y matrices en Python y C. <em>(Próximamente)</em></p>
-</div>
+<p>Selección y repetición en Python y C; vectores y matrices frente a listas y tuplas de Python.</p>
+</a>
 
-<div class="card-nav" style="opacity:0.55;cursor:default;">
+<a href="tema0_4_punteros_rs232.qmd" class="card-nav">
 <h3>Tema 0.4 — Punteros y comunicación RS-232</h3>
-<p>Punteros en vectores y matrices, comunicación por puerto RS-232 en C y Python. <em>(Próximamente)</em></p>
-</div>
+<p>Punteros y memoria dinámica en C; comunicación por el puerto RS-232 entre el ESP32 (C) y el ordenador (Python).</p>
+</a>
 
 </div>
 
-### Bloque 1 — Fundamentos de computadores
+### Bloque 1 — Sistemas SCADA
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:1rem;">
 
-<div class="card-nav" style="opacity:0.55;cursor:default;">
-<h3>Tema 1 — Fundamentos de Computadores</h3>
-<p>Arquitectura de computadores, CPU, memoria y buses aplicados al entorno industrial. <em>(Próximamente)</em></p>
-</div>
+<a href="tema1_scada.qmd" class="card-nav">
+<h3>Tema 1 — Sistemas SCADA</h3>
+<p>Arquitectura y módulos de los sistemas de supervisión, control y adquisición de datos; RTU/MTU, HMI, criterios de diseño e IIoT.</p>
+</a>
 
 </div>
 
-### Bloque 2 — Sistemas SCADA
+### Bloque 2 — Fundamentos de computadores
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:1rem;">
 
-<div class="card-nav" style="opacity:0.55;cursor:default;">
-<h3>Tema 2 — Sistemas SCADA</h3>
-<p>Concepto, funciones y arquitectura de los sistemas de supervisión, control y adquisición de datos. <em>(Próximamente)</em></p>
-</div>
+<a href="tema2_fundamentos.qmd" class="card-nav">
+<h3>Tema 2 — Fundamentos de Computadores</h3>
+<p>Arquitectura von Neumann, CPU, memoria, buses y E/S; el ESP32 como caso real de arquitectura embebida.</p>
+</a>
 
 </div>
 
@@ -70,10 +70,10 @@ author: "David Muñoz Valero"
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:1rem;">
 
-<div class="card-nav" style="opacity:0.55;cursor:default;">
+<a href="tema3_perifericos.qmd" class="card-nav">
 <h3>Tema 3 — Periféricos Industriales</h3>
-<p>Sensores, actuadores e interfaces de entrada/salida en entornos industriales. <em>(Próximamente)</em></p>
-</div>
+<p>Controladores, E/S programada, interrupciones, DMA y procesador de E/S en el entorno industrial.</p>
+</a>
 
 </div>
 
@@ -81,10 +81,10 @@ author: "David Muñoz Valero"
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:1rem;">
 
-<div class="card-nav" style="opacity:0.55;cursor:default;">
+<a href="tema4_redes.qmd" class="card-nav">
 <h3>Tema 4 — Redes de Comunicaciones Industriales</h3>
-<p>Protocolos y topologías de comunicación en redes industriales. <em>(Próximamente)</em></p>
-</div>
+<p>Modelo OSI, Ethernet, TCP/IP, IPv6, TSN y protocolos de aplicación industrial (MQTT, OPC-UA).</p>
+</a>
 
 </div>
 
@@ -92,10 +92,10 @@ author: "David Muñoz Valero"
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:1rem;">
 
-<div class="card-nav" style="opacity:0.55;cursor:default;">
+<a href="tema5_buses.qmd" class="card-nav">
 <h3>Tema 5 — Buses de Campo</h3>
-<p>Buses industriales: características, comparativa y casos de aplicación. <em>(Próximamente)</em></p>
-</div>
+<p>RS-232, RS-485 y Modbus como base legacy; EtherCAT, PROFINET/EtherNet-IP, CAN/CANopen y OPC-UA/TSN.</p>
+</a>
 
 </div>
 
@@ -103,10 +103,10 @@ author: "David Muñoz Valero"
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:1rem;">
 
-<div class="card-nav" style="opacity:0.55;cursor:default;">
+<a href="tema6_tiempo_real.qmd" class="card-nav">
 <h3>Tema 6 — Sistemas de Tiempo Real</h3>
-<p>Planificación, restricciones temporales y sistemas de tiempo real en control industrial. <em>(Próximamente)</em></p>
-</div>
+<p>Planificación (ejecutivo cíclico, RMS, EDF), gestión de recursos compartidos y FreeRTOS en ESP32 como caso de estudio.</p>
+</a>
 
 </div>
 
@@ -114,35 +114,10 @@ author: "David Muñoz Valero"
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:1rem;">
 
-<div class="card-nav" style="opacity:0.55;cursor:default;">
-<h3>Práctica 1 — LEDs</h3>
-<p>Control de salidas digitales con LEDs. <em>(Próximamente)</em></p>
-</div>
-
-<div class="card-nav" style="opacity:0.55;cursor:default;">
-<h3>Práctica 2 — Display 7 segmentos</h3>
-<p>Control de un display de 7 segmentos. <em>(Próximamente)</em></p>
-</div>
-
-<div class="card-nav" style="opacity:0.55;cursor:default;">
-<h3>Práctica 3 — Teclado de membrana</h3>
-<p>Lectura de un teclado matricial de membrana. <em>(Próximamente)</em></p>
-</div>
-
-<div class="card-nav" style="opacity:0.55;cursor:default;">
-<h3>Práctica 4 — LCD I2C</h3>
-<p>Visualización por LCD vía I2C. <em>(Próximamente)</em></p>
-</div>
-
-<div class="card-nav" style="opacity:0.55;cursor:default;">
-<h3>Práctica 5 — Infrarrojos</h3>
-<p>Comunicación por infrarrojos. <em>(Próximamente)</em></p>
-</div>
-
-<div class="card-nav" style="opacity:0.55;cursor:default;">
-<h3>Prácticas STR — Sistemas de tiempo real</h3>
-<p>Prácticas de planificación y tiempo real. <em>(Próximamente)</em></p>
-</div>
+<a href="https://github.com/DavidMunozValero/informatica-industrial-gieia-practicas" class="card-nav" target="_blank">
+<h3>Prácticas P1–P6b</h3>
+<p>Comunicaciones ESP32 ↔ PC/móvil/wearable: TCP/IP, MQTT+SCADA, BLE, Modbus TCP/OPC-UA y Sistemas de Tiempo Real con FreeRTOS.</p>
+</a>
 
 </div>
 
@@ -152,7 +127,7 @@ Este material docente ha sido diseñado como recurso interactivo para la asignat
 de **Informática Industrial** del Grado en Ingeniería Electrónica Industrial y
 Automática de la Universidad de Castilla-La Mancha.
 
-Puedes navegar por los temas desde la barra lateral izquierda. Cada tema incluirá:
+Puedes navegar por los temas desde la barra lateral izquierda. Cada tema incluye:
 
 - **Diagramas interactivos** para visualizar conceptos.
 - **Widgets** para experimentar con bits, bases numéricas, puertas lógicas y código.

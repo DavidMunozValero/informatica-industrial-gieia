@@ -1,0 +1,496 @@
+---
+title: "Tema 1: Sistemas SCADA"
+subtitle: "Bloque 1 — Sistemas SCADA"
+author: "David Muñoz Valero"
+---
+
+## 1. Introducción a SCADA
+
+En una planta industrial —una refinería, una línea de ensamblaje, un parque eólico o la red de distribución eléctrica de una comarca— operan a la vez miles de sensores y actuadores que ningún operador puede vigilar a mano. El **SCADA** (*Supervisory Control And Data Acquisition*) es la capa de software que se interpone entre ese mar de dispositivos de campo y el operador humano, ofreciéndole una vista global del proceso, alarmas, históricos y un punto de mando unificado.
+
+Los sistemas SCADA aparecieron en los años 60 del siglo XX como paneles sinópticos de luces y relés y, a lo largo de seis décadas, han evolucionado hasta integrarse con la nube, el *edge computing* y el Internet Industrial de las Cosas (IIoT). Este tema recorre esa evolución: desde la arquitectura clásica MTU/RTU hasta los sistemas distribuidos modernos basados en **MQTT**, **OPC-UA** y plataformas **Node-RED**.
+
+:::{.callout-note}
+## Definición
+
+**SCADA** (*Supervisory Control And Data Acquisition*): aplicación de control de producción que se comunica con los dispositivos de campo y controla el proceso de forma automática desde la pantalla del ordenador [1]. Proporciona:
+
+- **Información** a distintos usuarios: operadores, supervisores de calidad, mantenimiento y gestión.
+- **Acceso a datos remotos** de un proceso y el control de este.
+- Un **software de monitorización y supervisión** que actúa de interfaz entre los niveles de control (campo) y de gestión (empresa).
+:::
+
+### 1.1 Prestaciones de un SCADA
+
+| Prestación | Qué aporta |
+|---|---|
+| **Adquisición de datos** | Herramientas registradoras que capturan y almacenan la información del proceso. |
+| **Supervisión** | Vigilar la evolución del proceso para que el operario decida. |
+| **Mando** | Control directo del operador: marcha/paro, consignas, parámetros. |
+| **Monitorización** | Representación de variables en tiempo real en pantalla. |
+| **Seguridad de los datos** | Datos protegidos de influencias no deseadas, intencionadas o no. |
+| **Seguridad de accesos** | Registro de accesos y restricción de zonas a usuarios no autorizados. |
+| **Recetas** | Combinaciones de variables predefinidas para una misma línea (velocidad y temperatura de una vulcanizadora según el perfil de goma). |
+| **Programación numérica** | Cálculos aritméticos y lógicos sobre la CPU del SCADA, en lenguajes de alto nivel. |
+
+```{mermaid}
+%%{init: {'theme':'base', 'themeVariables': {'fontFamily':'inherit','fontSize':'17px','lineColor':'#8B1D2B','primaryColor':'#F5E6E8','primaryTextColor':'#6B0E1A','primaryBorderColor':'#8B1D2B'}}}%%
+flowchart LR
+    PROC("Proceso<br/>industrial") --> ACQ["Adquisición<br/>de datos"]
+    ACQ --> SUP["Supervisión"]
+    SUP --> MON["Monitorización<br/>(HMI)"]
+    MON --> MAN["Mando<br/>del operador"]
+    MAN --> ACT("Actuadores<br/>de campo") --> PROC
+    ACQ --> HIST["Histórico<br/>y alarmas"]
+    style PROC fill:#8B1D2B,stroke:#6B0E1A,color:#fff,stroke-width:1.5px
+    style ACQ fill:#F5E6E8,stroke:#8B1D2B,stroke-width:1.2px,color:#6B0E1A
+    style SUP fill:#F5E6E8,stroke:#8B1D2B,stroke-width:1.2px,color:#6B0E1A
+    style MON fill:#F5E6E8,stroke:#8B1D2B,stroke-width:1.2px,color:#6B0E1A
+    style MAN fill:#F5E6E8,stroke:#8B1D2B,stroke-width:1.2px,color:#6B0E1A
+    style ACT fill:#8B1D2B,stroke:#6B0E1A,color:#fff,stroke-width:1.4px
+    style HIST fill:#C9A227,stroke:#8a7a10,color:#fff,stroke-width:1.2px
+```
+
+*Lectura del diagrama:* el nodo granate de la izquierda es el **proceso físico** que quiere controlarse; el de la derecha son los **actuadores** que actúan sobre él. Entre ambos, el SCADA (cajas rosas) cierra el lazo: **adquiere** datos del proceso, los **supervisa**, los **muestra** al operador en la HMI y, a partir de sus decisiones, **manda** órdenes de vuelta. La caja dorada representa los **históricos y alarmas**, que no cierran el lazo pero son imprescindibles para el seguimiento y la trazabilidad.
+
+## 2. Arquitectura de un sistema SCADA
+
+Un sistema SCADA se divide en tres bloques principales, cada uno con una responsabilidad bien separada:
+
+1. **Software de adquisición de datos y control** (el código SCADA propiamente dicho, que se ejecuta en uno o varios PC).
+2. **Sistemas de adquisición y mando** (los controladores de campo: PLC, RTU, IED, que capturan señales de sensores y mueven actuadores).
+3. **Sistema de interconexión** (los buses de campo y las redes que enlazan los PC con los controladores).
+
+:::{.callout-note}
+## Fabricación Integral Informatizada (CIM)
+
+El software SCADA es la pieza que integra el "mundo de las máquinas" en la red empresarial, dentro de lo que se denomina **CIM** (*Computer Integrated Manufacturing*). El SCADA no vive aislado: exporta datos hacia niveles superiores —MES (Manufacturing Execution System) y ERP (Enterprise Resource Planning)— para que la fábrica y la gestión hablen el mismo idioma.
+:::
+
+### 2.1 Sistemas de adquisición y mando
+
+- **Equipamiento:** en uno o varios equipos reside la aplicación de control y supervisión (servidor). El usuario accede a ella mediante un software de visualización y control.
+- **Redes de comunicaciones corporativas (Ethernet):** enlazan los servidores con los puestos de visualización.
+- **Sensores:** el sistema toma el estado del proceso y lo muestra al operador a través de la HMI.
+- **Actuadores:** el sistema actúa sobre el proceso a partir de las órdenes del operador (marcha, paro, consignas).
+
+### 2.2 Sistema de interconexión
+
+La transmisión de datos entre el nivel de proceso y los elementos de campo se lleva a cabo mediante los denominados **buses de campo**, que se estudian en detalle en el Tema 5. La tendencia actual es englobar los sistemas de comunicación en una base común, como **Ethernet Industrial**, en lugar de mantener la proliferación de buses propietarios del pasado.
+
+:::{.callout-tip}
+## Modelo maestro-esclavo y polling
+
+La adquisición de datos se realiza habitualmente según el modelo **maestro-esclavo**: la estación central (el *master*) interroga cíclicamente a las estaciones remotas (los *slaves*) requiriéndoles datos y/o acciones. A ese ciclo de interrogación se le llama **polling** y lo verás implementado en Modbus (Tema 5) y en la práctica de sockets TCP/IP.
+
+Los sistemas SCADA modernos, sin embargo, están migrando de *polling* cíclico a un modelo **publicador/suscriptor** (pub/sub) con **MQTT**, en el que los dispositivos de campo publican cambios de estado solo cuando se producen, reduciendo el tráfico y la latencia. Lo verás en la práctica P3.
+:::
+
+## 3. Elementos hardware de un SCADA
+
+A nivel hardware, el SCADA se organiza en un **modelo cliente-servidor**:
+
+- **Captadores de datos** (servidores): recogen información de autómatas, reguladores y registradores a través de los buses de campo.
+- **Utilizadores de datos** (clientes): consumen la información que los servidores recopilan para presentar al operador o alimentar análisis.
+
+```{mermaid}
+%%{init: {'theme':'base', 'themeVariables': {'fontFamily':'inherit','fontSize':'17px','lineColor':'#8B1D2B','primaryColor':'#F5E6E8','primaryTextColor':'#6B0E1A','primaryBorderColor':'#8B1D2B'}}}%%
+flowchart TB
+    subgraph CAMPO["Campo"]
+      S1["Sensor 1"] --> RTU["RTU / PLC<br/>(controlador de campo)"]
+      S2["Sensor 2"] --> RTU
+      RTU --> A1["Actuador 1"]
+    end
+    subgraph RED["Red de planta (Ethernet / Bus de campo)"]
+      RTU <-->|"Modbus / OPC-UA<br/>MQTT"| MTU
+    end
+    subgraph SALA["Sala de control"]
+      MTU["MTU<br/>(servidor SCADA)"] --> HMI["HMI<br/>(puntos de operador)"]
+      MTU --> DB[("Base de datos<br/>histórica")]
+      HMI --> OP["Operador"]
+    end
+    style CAMPO fill:#fafafa,stroke:#B33040,stroke-width:1px,color:#444
+    style RED fill:#F5E6E8,stroke:#8B1D2B,stroke-width:1.2px,color:#6B0E1A
+    style SALA fill:#fafafa,stroke:#C9A227,stroke-width:1px,color:#444
+    style RTU fill:#8B1D2B,stroke:#6B0E1A,color:#fff,stroke-width:1.4px
+    style MTU fill:#8B1D2B,stroke:#6B0E1A,color:#fff,stroke-width:1.4px
+    style HMI fill:#F5E6E8,stroke:#8B1D2B,stroke-width:1.2px,color:#6B0E1A
+    style DB fill:#C9A227,stroke:#8a7a10,color:#fff,stroke-width:1.2px
+    style OP fill:#F5E6E8,stroke:#8B1D2B,stroke-width:1px,color:#6B0E1A
+```
+
+*Lectura del diagrama:* hay tres niveles claramente separados por subgrafos. Abajo (rosa claro) el **campo**, donde sensores y actuadores se conectan a un controlador (RTU o PLC, en granate). En el medio (rosa) la **red de planta**, que transporta los datos entre el controlador y el servidor SCADA usando protocolos como Modbus, OPC-UA o MQTT. Arriba (caja clara con bordes dorados) la **sala de control**, donde el servidor MTU ataca la HMI, la base de datos histórica y, en último término, al operador humano. Los protocolos que aparecen en la flecha del medio son el contenido de los Temas 4 y 5.
+
+Los cuatro elementos básicos que aparecen en cualquier arquitectura SCADA son:
+
+1. **Interfaz Hombre-Máquina (HMI)**
+2. **Unidad central (MTU)**
+3. **Unidad remota (RTU)**
+4. **Sistema de comunicaciones**
+
+### 3.1 Interfaz Hombre-Máquina (HMI)
+
+La **HMI** (*Human-Machine Interface*) son los sinópticos y pantallas gráficas que representan de forma simplificada el sistema bajo control.
+
+- Originalmente eran **paneles sinópticos estáticos**, plagados de indicadores y luces montados sobre un mural.
+- Con la generalización de las PVD (*Display Visual Terminals*) se pasaron a **representaciones gráficas en pantalla**, que pueden reconfigurarse sin modificar el hardware.
+- En sistemas complejos aparecen **terminales múltiples** que permiten la visualización simultánea de varios sectores.
+- En ciertas instalaciones —por claridad para el operador— se sigue manteniendo una versión moderna del panel sinóptico además de la HMI digital.
+
+### 3.2 Unidad central (MTU)
+
+La **MTU** (*Master Terminal Unit*) es el terminal que centraliza el mando del sistema. Debe usar **protocolos abiertos** que permitan la interoperabilidad multiplataforma y multisistema.
+
+Sus funciones principales son: mando, gestión de comunicaciones, recopilación de datos de todas las estaciones remotas (RTU), envío de información hacia niveles superiores, comunicación con los operadores, seguridad, análisis, impresión y visualización.
+
+:::{.callout-note}
+## Equipos informáticos con funciones específicas
+
+En una MTU medianamente compleja las tareas se reparten entre equipos especializados:
+
+- **Administración:** gestión y mantenimiento del SCADA, control de seguridad, configuración de *backups*.
+- **Comunicaciones:** intercambio de datos en tiempo real con estaciones remotas. Es un punto de entrada/salida, por lo que se le presta especial atención de seguridad.
+- **Database Server:** archivado de datos para su análisis posterior.
+- **File Server:** almacenamiento de resultados, eventos, configuraciones y alarmas.
+:::
+
+### 3.3 Unidad remota (RTU)
+
+La **RTU** (*Remote Terminal Unit*) es el conjunto de elementos dedicados a labores de control y supervisión, alejados del centro de control y comunicados con él por algún canal.
+
+:::{.callout-warning}
+## La divisoria RTU / PLC se está desdibujando
+
+Las RTU clásicas eran ordenadores industriales robustos que recogían datos y los transmitían a la MTU. Los **PLC** (*Programmable Logic Controllers*) empezaron como controladores de dedicación exclusiva y han ido incorporando módulos de ampliación, entre ellos procesadores de comunicaciones. La línea divisoria entre RTU y PLC está prácticamente desvanecida y en planta se usa "RTU" y "PLC" casi como sinónimos. Conviene conocer ambos términos porque seguirán apareciendo en manuales y normativas.
+:::
+
+A la familia de unidades remotas se asimilan varias categorías:
+
+- **RTU** — recogida y proceso de datos locales, comandos desde la MTU, robustez eléctrica y de temperaturas superior a un PC.
+- **PLC** — control de instalaciones, máquinas o procesos; hoy también con capacidad de comunicaciones por buses de campo.
+- **IED** (*Intelligent Electronic Device*) — controlador basado en microprocesador integrado en un equipo del sistema de alimentación (interruptores, transformadores, bancos de condensadores). Pueden disparar interruptores ante anomalías o regular tensión. Aún es habitual encontrar IED con **protocolos propietarios**, que dan lugar a las llamadas *islas de automatización*.
+- **Sistemas remotos** —grandes sistemas complejos que forman parte de otro aún mayor. Ejemplo: control de distribución eléctrica nacional, donde una estación remota puede tener a su cargo toda una ciudad, con funciones de control, HMI, adquisición, bases de datos, seguridad y comunicaciones internas.
+
+### 3.4 Sistema de comunicaciones
+
+Los buses de comunicación proporcionan al operador la posibilidad de comunicarse con cualquier punto de la planta en tiempo real. Un servidor de datos puede gestionar varios protocolos simultáneamente, limitado solo por las tarjetas de comunicación que soporte físicamente.
+
+El intercambio de información entre servidores y clientes sigue la relación **productor-consumidor**: los servidores interrogan cíclicamente a los *slaves* (RTU) recopilando datos por *polling*. En arquitecturas IIoT modernas esa relación se sustituye por **pub/sub** con MQTT: el servidor se suscribe a *topics* y los dispositivos publican cambios solo cuando se producen.
+
+## 4. Tecnologías software en un SCADA
+
+Un programa SCADA se ejecuta en un PC y se comunica, mediante controladores de comunicaciones específicos, **hacia abajo** con los dispositivos de control de planta (PLCs, RTUs) y **hacia arriba** con los elementos de gestión (ERP, MES). Los controladores de comunicaciones se encargan de:
+
+1. Gestionar los enlaces de comunicación.
+2. Tratar la información que se transfiere.
+3. Hablar los protocolos de campo: Modbus, Profibus, AS-i, CAN, Ethernet Industrial, OPC-UA…
+
+Por lo general son módulos de pago y actúan de **traductores** entre el lenguaje del SCADA y el del autómata (Profibus, Modbus…), o entre el SCADA y la red corporativa (Ethernet, OPC-UA, MQTT…).
+
+### 4.1 Comunicación entre aplicaciones
+
+Históricamente, los SCADAs se integraban con otras aplicaciones mediante estándares como **OPC**, **ODBC**, **SQL**, **ASCII** y **API**. Hoy el panorama sigue incluyendo todos ellos, pero con un cambio de paradigma motivado por el abandono de las tecnologías COM/DCOM de Microsoft en favor de estándares multiplataforma.
+
+:::{.callout-note}
+## OPC clásico vs. OPC-UA
+
+**OPC** (*OLE for Process Control*) nació como un estándar abierto basado en **COM/DCOM** de Microsoft. Su idea clave es **independizar el método de acceso a los datos del tipo y origen de los mismos**: cualquier cliente OPC puede leer cualquier servidor OPC sin importar el protocolo de campo subyacente.
+
+El problema es que COM/DCOM es un tecnología Windows-only, inadecuada para los controladores modernos basados en Linux/RTOS. Por eso nació **OPC-UA** (*OPC Unified Architecture*), que:
+
+- es **multiplataforma** (no depende de COM/DCOM),
+- incorpora **seguridad integrada** (certificados X.509, firma y cifrado de mensajes),
+- define un **modelo de información** rico (espacio de direcciones jerárquico con tipos),
+- se estudia en detalle en el Tema 5 y se usa en la práctica P5 sobre ESP32.
+
+En planta nueva no se instala ya OPC clásico; se instala **OPC-UA**.
+:::
+
+| Tecnología | Papel en el SCADA |
+|---|---|
+| **OPC / OPC-UA** | Estándar de acceso a datos de campo. Cliente = consume datos; Servidor = recopila datos de los elementos de campo. |
+| **ODBC** | Acceso estándar a bases de datos (DBMS) vía SQL; el SCADA incluye el controlador del fabricante. |
+| **SQL** | Lenguaje estándar de acceso a datos: procedimientos, eventos, replicación y accesibilidad basada en eventos. |
+| **API** | Bibliotecas en lenguajes estandarizados (C, C++, Java, Python) para adaptar el SCADA a necesidades específicas. |
+| **ASCII** | Intercambio básico de configuraciones, variables y valores. |
+
+### 4.2 Almacenamiento de datos
+
+El almacenamiento de la ingente cantidad de datos generados por un proceso industrial ha evolucionado:
+
+1. **Ficheros** planos o indexados en disco. Un solo punto de acceso; complicados de tratar.
+2. **Bases de datos jerárquicas** — registros ordenados por jerarquías (un registro es subconjunto de otro). Limitadas si se consultan variables de_branches distintos.
+3. **Bases de datos relacionales** —cconjuntos de tablas unidas por campos de relación. Simplifican la administración y reducen redundancia e inconsistencias. Son el estándar para los datos de configuración, alarmas y eventos.
+4. **Bases de datos industriales / serie temporal** — las relacionales no escalan bien para series temporales de muestreo a milisegundos. Aparecen las **TSDB** (*Time-Series Data Bases*): InfluxDB, TimescaleDB, Prometheus…, optimizadas para indexación temporal y agregados por ventana de tiempo.
+
+:::{.callout-tip}
+## SCADA en la nube y edge computing
+
+El SCADA clásico vivía en una sala de control física, con servidores en el propio enclave industrial. La tendencia actual combina dos frentes:
+
+- **Edge computing:** procesar alarmas y control de bucle cerrado en el propio dispositivo de campo (en un gateway o en un ESP32, por ejemplo), garantes de latencia baja y de operación ante pérdida de comunicaciones.
+- **SCADA cloud:** enviar agregados y series temporales a una plataforma cloud (AWS IoT, Azure IoT, MindSphere, etc.) para análisis, ML y dashboards accesibles desde cualquier parte.
+
+El desacoplamiento edge/cloud permite que el SCADA siga controlando aunque se caiga la conexión a internet, mientras que la nube absorbe el analisis histórico y la explotación de los datos.
+:::
+
+## 5. Módulos software
+
+Un SCADA actual se descompone en módulos software que cubren la configuración, la interacción con el operador, el control del proceso y la explotación de datos:
+
+- **Configuración** — define el entorno de trabajo: organización de pantallas, usuarios, tareas, alarmas, recetas.
+- **Interfaz gráfica** — editor de pantallas de usuario con imágenes, textos y animaciones que reflejan el estado del proceso.
+- **Tendencias** — gráficas de evolución de variables. Distingue **real-time trending** (variables en vivo) e **historical trending** (recuperación de histórico), con *scroll* y *zoom*.
+- **Alarmas y eventos** — las **alarmas** vigilan parámetros anómalos y requieren atención del operario; los **eventos** son situaciones normales registradas automáticamente.
+- **Registro y archivado** — archivo temporal cíclico de valores, limitado en tamaño; al llenarse se vuelca a archivo (archivado).
+- **Generación de informes** — extractos clasificados de archivos, registros y BDs sin alterar los datos originales.
+- **Control de proceso** — lenguajes de alto nivel embebidos para responder a eventos del sistema (enviar un correo al activarse una alarma, un SMS al servicio de mantenimiento, etc.).
+- **Recetas** — archivos con configuraciones predefinidas de un lote o producto; simplifican los cambios de fabricación.
+- **Comunicaciones** — intercambio entre planta e IT, ya sea con controladores específicos (un enlace, un controlador) o **controladores genéricos** abiertos como OPC.
+
+:::{.callout-warning}
+## SCADA vs. HMI vs. PLC
+
+Es fácil confundir los tres términos. Simplificando:
+
+- **PLC / RTU** — controlador de campo que ejecuta la lógica del proceso en tiempo real.
+- **HMI** — la pantalla con la que el operador interactúa localmente con el PLC.
+- **SCADA** — sistema distribuido que supervisa **varios PLC/HMI** a la vez, históricos y nivel corporativo.
+
+La diferencia es de **alcance**: una HMI supervisa una máquina; un SCADA supervisa una planta entera y se conecta a ERP/MES.
+:::
+
+## 6. Criterios de selección y diseño
+
+A la hora de implantar un SCADA se evalúan seis criterios interrelacionados. Conviene tenerlos presentes porque aparecen en cualquier pliego técnico.
+
+### 6.1 Disponibilidad
+
+La **disponibilidad** es la medida en que los parámetros de funcionamiento se mantienen dentro de las especificaciones de diseño. Se basa en hardware y software y se fundamenta en el **principio de redundancia**: la capacidad de un elemento de asumir, de forma transparente, las funciones de otro.
+
+:::{.callout-example}
+## Redundancia en la práctica
+
+- Un **SAI** (Sistema de Alimentación Ininterrumpida) evita el corte de alimentación.
+- En equipos de bombeo se colocan **dos bombas trabajando en alternancia**, de modo que el fallo de una no detenga el servicio.
+- En comunicaciones entre equipos se utiliza **topología de doble anillo de fibra óptica**.
+:::
+
+### 6.2 Robustez
+
+La **robustez** es la capacidad de mantener un nivel de operatividad suficiente ante un fallo de diseño, accidente o intrusión. Exige un **plan de contingencia**. Por ejemplo: ante un fallo grave en el sistema central, las estaciones remotas pueden pasar a estado de **autogestión** (esclavos inteligentes) hasta que el sistema central retome el control.
+
+### 6.3 Seguridad
+
+La **seguridad** abarca estrategias para **prevenir, detectar y defenderse** de acciones no deseadas (intencionadas o no) que llegan por los canales de comunicación del sistema de control.
+
+Estrategias típicas:
+
+- Jerarquías de usuario y contraseñas (archivo de accesos) para limitar el acceso a datos sensibles.
+- **Encriptación** de los datos que se emiten.
+- **Filtrado** de la información recibida (IPs de origen conocidas).
+- Caminos de acceso definidos con *firewalls* (puertos de acceso).
+- Detección de incoherencias en los datos internos.
+- **Watchdog** (perro guardián): software de vigilancia que ejecuta acciones predefinidas ante un comportamiento anómalo de otro software.
+
+:::{.callout-tip}
+## Seguridad en SCADA: la ciberseguridad industrial
+
+Tradicionalmente las redes de control industrial estaban aisladas (*air gap*). Hoy están conectadas a la red corporativa e incluso a internet, y se han convertido en objetivo de ataques: Stuxnet (2010), Industroyer/Crashoverride (2016, sector eléctrico ucraniano), Triton/Trisis (2017, sistemas de seguridad de una refinería).
+
+Las principales normativas de ciberseguridad industrial son **IEC 62443** y, en España, el **Real Decreto 311/2022** y el Esquema Nacional de Seguridad (ENS), que obliga a ciertos operadores de servicios esenciales a implantar medidas específicas. Cualquier SCADA nuevo debe diseñarse con estos referentes en cuenta.
+:::
+
+### 6.4 Prestaciones
+
+Las **prestaciones** miden el **tiempo de respuesta** del sistema, tanto en operación normal como en alerta. En régimen normal la carga está dentro de los parámetros de tiempo real; en estado de alerta la actividad aumenta considerablemente, y el equipo debe poder asimilar toda la información que se genera sin perderla, aunque su presentación no se realice en tiempo estricto.
+
+### 6.5 Mantenibilidad
+
+La **mantenibilidad** (definición IEEE) es la facilidad con que un sistema o componente software puede modificarse para corregir fallos, mejorar prestaciones o adaptarse a cambios del entorno. Se reduce al mínimo cuando el sistema incluye **herramientas de diagnóstico** que permiten mantenimiento preventivo, modificaciones y pruebas en paralelo con la explotación.
+
+### 6.6 Escalabilidad
+
+La **escalabilidad** es la capacidad de un sistema para ser ampliado con nuevas prestaciones en plazo y coste razonables. La ampliación puede venir motivada por espacio disponible, capacidad del equipo informático (memoria, procesadores, alimentaciones) o capacidad del sistema de comunicaciones (limitaciones físicas, protocolos, tiempos de respuesta).
+
+```{mermaid}
+%%{init: {'theme':'base', 'themeVariables': {'fontFamily':'inherit','fontSize':'17px','lineColor':'#8B1D2B'}}}%%
+flowchart LR
+    P1["Paso 1<br/>1 servidor"] --> P2["Paso 2<br/>reparto de tareas"] --> P3["Paso 3<br/>máquinas distribuidas"] --> P4["Paso 4<br/>redundancia"]
+    style P1 fill:#F5E6E8,stroke:#8B1D2B,stroke-width:1.2px,color:#6B0E1A
+    style P2 fill:#F5E6E8,stroke:#8B1D2B,stroke-width:1.2px,color:#6B0E1A
+    style P3 fill:#F5E6E8,stroke:#8B1D2B,stroke-width:1.2px,color:#6B0E1A
+    style P4 fill:#C9A227,stroke:#8a7a10,color:#fff,stroke-width:1.2px
+```
+
+*Lectura del diagrama:* la escalabilidad es un camino de cuatro pasos, donde cada uno aumenta la tolerancia a fallos y la capacidad de proceso. **Paso 1** (rosa) — un único servidor para todo: si cae, cae el sistema, y una ampliación posterior es costosa. **Paso 2** — se reparten tareas entre varios servidores más pequeños y especializados, más tolerantes a fallos. **Paso 3** — se atomiza el sistema en **máquinas distribuidas en red**, cada una con su capacidad de proceso y su punto de acceso. **Paso 4** (dorado) — se introducen **servidores redundantes** y comunicaciones duplicadas que hacen el sistema seguro y resistente.
+
+La visión final para el operador es la de un único sistema global transparente; para el ingeniero de control, una herramienta potente que permite aislar y gestionar las tareas de control con eficiencia.
+
+## 7. SCADA moderno: IIoT, MQTT y Node-RED
+
+La arquitectura clásica MTU/RTU con *polling* cíclico aún es la base de muchas instalaciones, pero la llegada del **IIoT** (*Industrial Internet of Things*) está transformando el SCADA hacia un modelo más distribuido, independiente del fabricante y orientado a la nube.
+
+:::{.callout-note}
+## Qué es el IIoT
+
+El **IIoT** es la extensión del concepto IoT al entorno industrial: miles de dispositivos de campo inteligentes (no solo PLCs, sino también sensores con conectividad WiFi/BLE/celular) publican datos a plataformas que los agregan, los analizan y devuelven comandos. Frente al SCADA clásico, donde el operador era el destino final, en el IIoT también lo son las aplicaciones analíticas, los modelos de mantenimiento predictivo, los gemelos digitales y, eventualmente, de nuevo, los actuadores.
+:::
+
+Los elementos clave que definen un SCADA moderno son:
+
+- **MQTT** (*Message Queuing Telemetry Transport*, ISO/IEC 20922) — protocolo de mensajería ligero **pub/sub** sobre TCP/IP, pensado para entornos con ancho de banda limitado o conexiones intermitentes. Lo usas en la práctica P3 para construir un mini-SCADA entre ESP32 y Python.
+- **OPC-UA** — estándar de modelado y acceso a datos industriales mencionado arriba; equivalente moderno del OPC clásico liberado de COM/DCOM.
+- **Node-RED** — herramienta *low-code* basada en flujos que permite construir HMI, gateways y lógica de control arrastrando nodos. Ideal para prototipado y para el nivel edge.
+- **SCADA cloud / edge** — ya descrito en §4.2.
+
+```{mermaid}
+%%{init: {'theme':'base', 'themeVariables': {'fontFamily':'inherit','fontSize':'17px','lineColor':'#8B1D2B','primaryColor':'#F5E6E8','primaryTextColor':'#6B0E1A','primaryBorderColor':'#8B1D2B'}}}%%
+flowchart TB
+    subgraph FIELD["Campo (edge)"]
+      ESP["ESP32 / PLC<br/>con MQTT"]
+      ESP2["Sensor BLE"]
+    end
+    BR["Broker MQTT<br/>(Mosquitto)"]
+    subgraph APP["Aplicaciones (cloud/control)"]
+      NR["Node-RED<br/>+ dashboard"]
+      DB[("TSDB<br/>(InfluxDB)")]
+      ERP["ERP / MES"]
+    end
+    ESP -->|"publish"| BR
+    ESP2 -->|"publish"| BR
+    BR -->|"subscribe"| NR
+    BR -->|"subscribe"| DB
+    BR -.->|"REST / OPC-UA"| ERP
+    NR -->|"control"| ESP
+    style FIELD fill:#fafafa,stroke:#B33040,stroke-width:1px,color:#444
+    style APP fill:#fafafa,stroke:#C9A227,stroke-width:1px,color:#444
+    style ESP fill:#8B1D2B,stroke:#6B0E1A,color:#fff,stroke-width:1.4px
+    style ESP2 fill:#8B1D2B,stroke:#6B0E1A,color:#fff,stroke-width:1.4px
+    style BR fill:#F5E6E8,stroke:#8B1D2B,stroke-width:1.6px,color:#6B0E1A
+    style NR fill:#F5E6E8,stroke:#8B1D2B,stroke-width:1.2px,color:#6B0E1A
+    style DB fill:#C9A227,stroke:#8a7a10,color:#fff,stroke-width:1.2px
+    style ERP fill:#F5E6E8,stroke:#8B1D2B,stroke-width:1.2px,color:#6B0E1A
+```
+
+*Lectura del diagrama:* los dispositivos de campo (granate, abajo) ya no son RTUs interrogadas por un maestro, sino **publicadores** que envían datos a un **broker MQTT** (rosa, centro) cuando cambia su estado. El broker se encarga de entregar esos mensajes a los **suscriptores** relevantes: Node-RED construye el dashboard HMI, una TSDB (dorado) archiva las series temporales, y el ERP/MES consume agregados vía REST u OPC-UA. La flecha discontinua representa el **lazo de control** opcional: Node-RED puede publicar comandos que el ESP32 recibe y aplica al proceso. Esta arquitectura es exactamente la que se construye en la Práctica 3.
+
+:::{.callout-tip}
+## SCADA tradicional vs. SCADA-IIoT — resumen
+
+| | SCADA clásico | SCADA-IIoT |
+|---|---|---|
+| Topología | Maestro-esclavo, polling | Pub/sub, broker MQTT |
+| Protocolo típico | Modbus RTU/TCP, OPC clásico | MQTT, OPC-UA, HTTPS |
+| Destino de los datos | Operador local | Operador + cloud + analítica + ML |
+| Integración corporativa | Limitada, vía ODBC/SQL | Nativa, vía REST y APIs |
+| Hardware | SAI, servidores dedicados | Edge gateways, dispositivos IoT, cloud |
+:::
+
+## 8. Ejercicios
+
+### Ejercicio 1 {#ejercicio-1 .callout-exercise data-collapse="true"}
+
+Dibuja el diagrama de bloques de un sistema SCADA para una estación elevadora de agua con dos bombas en redundancia, indicando qué elementos son MTU, RTU, HMI y sistema de comunicaciones. Identifica además qué redundancy applies a cada nivel.
+
+:::{.solucion-wrapper}
+:::{.callout collapse="true"}
+## Solución
+
+Una solución válida:
+
+- **Proceso:** dos bombas en paralelo (cada una capaz del 100 % del caudal).
+- **RTU / PLC local:** un controlador por bomba más uno de supervisión de planta.
+- **MTU:** servidor SCADA con dos instancias redundantes (activo/pasivo).
+- **HMI:** dos puestos de operador en sala de control.
+- **Comunicaciones:** doble anillo de fibra entre planta y sala de control.
+- **Redundancia:**
+  - Nivel componente: dos bombas activas en alternancia.
+  - Nivel alimentación: SAI en la sala de control.
+  - Nivel comunicaciones: doble anillo.
+  - Nivel servidor: dos MTU en cluster activo/pasivo.
+
+:::
+:::
+
+### Ejercicio 2 {#ejercicio-2 .callout-exercise data-collapse="true"}
+
+El siguiente fragmento Python simula la recepción de un mensaje MQTT con tres variables y su volcado a una estructura de alarmas. Revisa el código y completa las condiciones de alarma: lanterna en temp > 80 °C, nivel < 20 % o servo en fallo.
+
+```{=html}
+<pre class="pg-code" style="display:none"># Recibe un mensaje MQTT y clasifica alarmas
+# Formato: "T=75.3;N=65;SERVO=OK"
+
+def evaluar_alarma(mensaje):
+    datos = dict(p.split("=") for p in mensaje.split(";"))
+    temp  = float(datos["T"])
+    nivel = float(datos["N"])
+    servo = datos["SERVO"]
+    alarmas = []
+    # Tu codigo aqui: anyade a 'alarmas' los textos
+    #   "Temp alta"      si temp > 80
+    #   "Nivel bajo"     si nivel < 20
+    #   "Servo en fallo" si servo != "OK"
+    return alarmas
+
+# Prueba
+print(evaluar_alarma("T=81.4;N=18;SERVO=OK"))
+print(evaluar_alarma("T=30.0;N=70;SERVO=FALLO"))</pre>
+<iframe src="widgets/python_playground.html" title="Zona de pruebas de Python" style="width:100%;border:none;min-height:350px;overflow:hidden;" scrolling="no"></iframe>
+<p><a href="https://colab.research.google.com/github/DavidMunozValero/informatica-industrial-gieia-practicas/blob/main/ejercicios/tema1_ejercicios.ipynb" target="_blank"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"></a></p>
+```
+
+:::{.solucion-wrapper}
+:::{.callout collapse="true"}
+## Solución
+
+```python
+def evaluar_alarma(mensaje):
+    datos = dict(p.split("=") for p in mensaje.split(";"))
+    temp  = float(datos["T"])
+    nivel = float(datos["N"])
+    servo = datos["SERVO"]
+    alarmas = []
+    if temp > 80:
+        alarmas.append("Temp alta")
+    if nivel < 20:
+        alarmas.append("Nivel bajo")
+    if servo != "OK":
+        alarmas.append("Servo en fallo")
+    return alarmas
+
+print(evaluar_alarma("T=81.4;N=18;SERVO=OK"))
+print(evaluar_alarma("T=30.0;N=70;SERVO=FALLO"))
+```
+
+```
+['Temp alta', 'Nivel bajo']
+['Servo en fallo']
+```
+
+:::
+:::
+
+:::{.callout-warning}
+## Recuerda
+
+El *playground* del navegador **no guarda** tus cambios. Si quieres conservar tu solución, pulsa **"Open in Colab"** para enviar el código a tu Google Drive.
+:::
+
+## 9. Bibliografía
+
+:::{.callout-note}
+## Referencias
+
+1. Rodríguez Penin, A. *Sistemas SCADA: guía práctica*. 2.ª ed. Barcelona: Marcombo, 2007. ISBN 978-84-267-1455-8. Referencia clásica de uso en este tema.
+2. Boyer, S. A. *SCADA: Supervisory Control and Data Acquisition*. 4.ª ed. Research Triangle Park (NC): ISA, 2010. (Actualización de la referencia SCADA más extendida en inglés).
+3. ISA-95. *Enterprise-control system integration*. ISA, 2018. (Estándar que define los niveles CIM delERP hasta el campo).
+4. ISO/IEC 20922. *Information technology — Message Queuing Telemetry Transport (MQTT) v3.1.1*. ISO, 2016.
+5. OPC Foundation. *OPC Unified Architecture Specifications*, 2023. <https://opcfoundation.org/about/specifications/>
+6. Maier, M. *Cybersecurity for SCADA Systems*. Tulsa: PennWell, 2020.
+7. IEC 62443. *Industrial communication networks — IT security for industrial automation and control systems*. IEC, 2018–2024. (Familia de estándares para ciberseguridad industrial).
+8. Stuxnet — Wikipedia. <https://en.wikipedia.org/wiki/Stuxnet> (Caso de estudio de ciberataque a SCADA industrial).
+9. Eclipse Foundation. *Mosquitto MQTT broker*. <https://mosquitto.org/> (Broker open source utilizado en la Práctica 3).
+10. OpenJS Foundation. *Node-RED — Low-code programming for event-driven applications*. <https://nodered.org/> (Herramienta low-code referencia para HMI yedge gateways).
+11. InfluxData. *InfluxDB — Time-series database*. <https://www.influxdata.com/> (TSDB open source para SCADAcloud).
+:::

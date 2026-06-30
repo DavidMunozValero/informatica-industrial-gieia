@@ -3,6 +3,16 @@ project:
   output-dir: _site
   render:
     - index.qmd
+    - tema0_1_arduino_esp32.qmd
+    - tema0_2_estructura_tipos.qmd
+    - tema0_3_control_vectores.qmd
+    - tema0_4_punteros_rs232.qmd
+    - tema1_scada.qmd
+    - tema2_fundamentos.qmd
+    - tema3_perifericos.qmd
+    - tema4_redes.qmd
+    - tema5_buses.qmd
+    - tema6_tiempo_real.qmd
   resources:
     - widgets/*.html
 
@@ -19,38 +29,42 @@ website:
     contents:
       - text: "Inicio"
         href: index.qmd
-      - section: "Bloque 0 — Programación (Arduino / Python / C)"
+      - section: "Bloque 0 — Programación de sistemas embebidos"
         contents:
-          - text: "Tema 0.1: Arduino IDE y NodeMCU"
+          - text: "Tema 0.1: Arduino IDE y ESP32"
+            href: tema0_1_arduino_esp32.qmd
           - text: "Tema 0.2: Estructura de programas, tipos y variables"
+            href: tema0_2_estructura_tipos.qmd
           - text: "Tema 0.3: Estructuras de control y vectores/matrices"
+            href: tema0_3_control_vectores.qmd
           - text: "Tema 0.4: Punteros y comunicación RS-232"
-      - section: "Bloque 1 — Fundamentos de computadores"
+            href: tema0_4_punteros_rs232.qmd
+      - section: "Bloque 1 — Sistemas SCADA"
         contents:
-          - text: "Tema 1: Fundamentos de Computadores"
-      - section: "Bloque 2 — Sistemas SCADA"
+          - text: "Tema 1: Sistemas SCADA"
+            href: tema1_scada.qmd
+      - section: "Bloque 2 — Fundamentos de computadores"
         contents:
-          - text: "Tema 2: Sistemas SCADA"
+          - text: "Tema 2: Fundamentos de Computadores"
+            href: tema2_fundamentos.qmd
       - section: "Bloque 3 — Periféricos industriales"
         contents:
           - text: "Tema 3: Periféricos Industriales"
+            href: tema3_perifericos.qmd
       - section: "Bloque 4 — Redes de comunicaciones industriales"
         contents:
           - text: "Tema 4: Redes de Comunicaciones Industriales"
+            href: tema4_redes.qmd
       - section: "Bloque 5 — Buses de campo"
         contents:
           - text: "Tema 5: Buses de Campo"
+            href: tema5_buses.qmd
       - section: "Bloque 6 — Sistemas de tiempo real"
         contents:
           - text: "Tema 6: Sistemas de Tiempo Real"
-      - section: "Prácticas"
-        contents:
-          - text: "Práctica 1: LEDs"
-          - text: "Práctica 2: Display 7 segmentos"
-          - text: "Práctica 3: Teclado de membrana"
-          - text: "Práctica 4: LCD I2C"
-          - text: "Práctica 5: Infrarrojos"
-          - text: "Prácticas STR: Sistemas de tiempo real"
+            href: tema6_tiempo_real.qmd
+      - text: "Prácticas P1–P6b"
+        href: https://github.com/DavidMunozValero/informatica-industrial-gieia-practicas
 
   search:
     location: sidebar
